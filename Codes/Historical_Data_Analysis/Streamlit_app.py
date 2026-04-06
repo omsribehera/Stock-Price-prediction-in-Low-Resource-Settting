@@ -1,93 +1,90 @@
-import os
+# --- IMPORTS ---
 import streamlit as st
+import pandas as pd
+import numpy as np
+import os
 
-# --- BASIC SAFE FUNCTIONS (REPLACEMENT FOR ALL MISSING ONES) ---
+# Import functions
+from Import_Functions_Deployed import *
 
-def display_background_image(*args, **kwargs):
-    st.markdown(
-        """
-        <style>
-        .stApp {
-            background: linear-gradient(135deg, #1f4037, #99f2c8);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="Stock Prediction")
+
+# --- DATA PATH ---
+DATASET_DIR = "Codes/Historical_Data_Analysis/Preprocessed_Dataset"
+
+# --- MAIN FUNCTION ---
+def main():
+    st.title("📈 Stock Market Prediction")
+
+    # Sidebar
+    st.sidebar.title("Explore")
+
+    selected_section = st.sidebar.radio(
+        "Go to",
+        [
+            "Stock Market Description 📈",
+            "Project Description 🧾",
+            "Companies 🏢",
+            "Numerical Dataset Visualization 📊",
+            "Numerical Model Prediction 🎯",
+        ],
     )
 
-def display_stock_market_description():
-    st.title("Stock Market Overview")
-    st.write("This section explains stock market basics.")
+    # ------------------ SECTIONS ------------------
 
-def display_project_description():
-    st.title("Project Description")
-    st.write("Stock prediction using ML models.")
+    if selected_section == "Stock Market Description 📈":
+        display_stock_market_description()
 
-def display_company_data_table():
-    st.write("Company data table will be shown here.")
+    elif selected_section == "Project Description 🧾":
+        display_project_description()
 
-def display_numerical_dataset_info(ticker):
-    st.write(f"Dataset info for {ticker}")
+    elif selected_section == "Companies 🏢":
+        display_company_data_table()
 
-def display_numerical_data_visualizations(ticker):
-    st.write(f"Visualizations for {ticker}")
+    elif selected_section == "Numerical Dataset Visualization 📊":
+        ticker = st.sidebar.selectbox(
+            "Select Stock",
+            ["AAPL", "GOOG", "AMZN", "MSFT"]
+        )
 
-def display_numerical_model_performance():
-    st.write("Model performance metrics")
+        try:
+            file_path = os.path.join(
+                DATASET_DIR,
+                f"Preprocessed_{ticker}_Dataset.csv"
+            )
 
-def display_numerical_model_visualization(ticker):
-    st.write(f"Model visualization for {ticker}")
+            df = pd.read_csv(file_path)
 
-def display_numerical_model_predicted(*args):
-    st.success("Predicted value shown here")
+            st.subheader(f"{ticker} Closing Price")
 
-def display_text_model_performance():
-    st.write("Text model performance")
+            st.line_chart(df["close"])
 
-def display_text_model_visualization():
-    st.write("Text visualization")
+        except Exception as e:
+            st.error(f"Error loading dataset: {e}")
 
-def display_text_model_prediction():
-    st.write("Text prediction")
+    elif selected_section == "Numerical Model Prediction 🎯":
+        ticker = st.sidebar.selectbox(
+            "Select Stock",
+            ["AAPL", "GOOG", "AMZN", "MSFT"]
+        )
 
-def display_hybrid_model_performance():
-    st.write("Hybrid model performance")
+        st.subheader(f"Predict {ticker} Closing Price")
 
-def display_hybrid_model_visualization():
-    st.write("Hybrid visualization")
+        open_price = st.number_input("Open Price")
+        high = st.number_input("High Price")
+        low = st.number_input("Low Price")
+        volume = st.number_input("Volume")
 
-def display_hybrid_model_prediction():
-    st.write("Hybrid prediction")
+        if st.button("Predict"):
+            display_numerical_model_predicted(
+                ticker, open_price, high, low, volume
+            )
 
-def display_project_database():
-    st.write("Database info")
-
-def display_project_dashboard():
-    st.write("Grafana dashboard")
-
-def display_project_flask_app():
-    st.write("Flask app link")
-
-def display_power_bi_dashboard():
-    st.write("PowerBI dashboard")
-
-def display_real_time_stock_prediction():
-    st.write("Real-time prediction")
-
-def display_reddit_chatbot_visualization():
-    st.write("Reddit chatbot")
-
-def display_contact_information():
-    st.write("Team info")
-
-def display_resources_information():
-    st.write("Resources")
-
-
-# Running the main function
+# --- RUN APP ---
 if __name__ == "__main__":
-    # Call function to display the background image with opacity
-    display_background_image()
-
-    # Call main function to run the app
+    display_background_image(
+        "https://vectormine.b-cdn.net/wp-content/uploads/Stock_Market.jpg",
+        0.8,
+    )
     main()
