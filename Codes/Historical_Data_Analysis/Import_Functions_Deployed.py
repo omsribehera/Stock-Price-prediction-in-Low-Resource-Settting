@@ -26,10 +26,36 @@ def display_numerical_model_performance():
     st.write("Model performance")
 
 def display_numerical_model_visualization(ticker):
-    st.write(f"Model visualization for {ticker}")
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import os
 
-def display_numerical_model_predicted(*args):
-    st.success("Prediction result")
+    try:
+        file_path = os.path.join(
+            "Codes/Historical_Data_Analysis/Preprocessed_Dataset",
+            f"Preprocessed_{ticker}_Dataset.csv"
+        )
+
+        df = pd.read_csv(file_path)
+
+        st.subheader(f"{ticker} Stock Price Visualization")
+
+        plt.figure()
+        plt.plot(df['close'], label="Closing Price")
+        plt.xlabel("Index")
+        plt.ylabel("Price")
+        plt.title(f"{ticker} Stock Prices")
+        plt.legend()
+
+        st.pyplot(plt)
+
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+
+def display_numerical_model_predicted(ticker, open_price, high, low, volume):
+    predicted_price = (open_price + high + low) / 3  # simple logic
+
+    st.success(f"Predicted Closing Price: ${predicted_price:.2f}")
 
 def display_text_model_performance():
     st.write("Text model performance")
